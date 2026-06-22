@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Cuadrante de socorrismo</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cuadrante">
+<meta name="theme-color" content="#0E3A43">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="icon" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sand:#ECE1CE;--sand-2:#F6EFE2;--ink:#0E3A43;--ink-soft:#3C5860;--muted:#728187;
+    --buoy:#E0492C;--buoy-dark:#bf3a20;--teal:#2F8A8C;--line:#d8ccb5;--card:#FBF7EE;
+    --shadow:0 1px 0 rgba(14,58,67,.04), 0 6px 22px rgba(14,58,67,.07);
+  }
+  *{box-sizing:border-box}html,body{margin:0}
+  body{background:var(--sand);color:var(--ink);font-family:'Inter',system-ui,-apple-system,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;padding:0 0 56px}
+  .wrap{max-width:560px;margin:0 auto;padding:0 16px}.num{font-variant-numeric:tabular-nums}
+  header{position:relative;background:var(--ink);color:var(--sand-2);padding:calc(26px + env(safe-area-inset-top)) 16px 30px;overflow:hidden}
+  header .stripe{position:absolute;top:0;left:0;right:0;height:6px;background:repeating-linear-gradient(90deg,var(--buoy) 0 22px,#f4ede0 22px 44px)}
+  header .eyebrow{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.18em;font-weight:600;font-size:13px;color:#8fc6c4;margin:6px 0 4px}
+  header h1{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:34px;line-height:1.02;margin:0;letter-spacing:.01em}
+  header p{margin:8px 0 0;color:#bcd3d2;font-size:13.5px;max-width:44ch}
+  section{margin-top:18px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+  .panel-h{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;cursor:pointer;user-select:none}
+  .panel-h h2{font-family:'Barlow Condensed',sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:16px;margin:0}
+  .panel-h .chev{color:var(--muted);font-size:13px;transition:transform .2s}
+  .panel.collapsed .panel-b{display:none}.panel.collapsed .chev{transform:rotate(-90deg)}
+  .panel-b{padding:4px 15px 16px;border-top:1px solid var(--line)}
+  label{display:block;font-size:12px;color:var(--ink-soft);font-weight:600;margin:12px 0 5px}
+  input{width:100%;font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 11px}
+  input:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:6px}
+  button{font:inherit;cursor:pointer;border:none;border-radius:9px}
+  .btn-add{width:100%;margin-top:14px;background:var(--buoy);color:#fff;font-weight:600;font-size:16px;padding:13px;transition:background .15s}
+  .btn-add:hover{background:var(--buoy-dark)}.btn-add:active{transform:translateY(1px)}
+  .backup{display:flex;gap:8px;margin-top:10px}
+  .backup button{flex:1;background:#fff;border:1px solid var(--line);color:var(--ink);font-weight:600;font-size:13.5px;padding:10px}
+  .backup button:active{background:#f1e8d6}
+  .week{margin-top:12px;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:#fff}
+  .week-h{display:flex;justify-content:space-between;align-items:baseline;padding:9px 12px;background:#f1e8d6}
+  .week-h .wt{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-weight:700;font-size:13px}
+  .week-h .ws{font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .week-h .ws b{color:var(--buoy-dark)}.week-h .ws .ok40{color:var(--muted)}
+  .entry{display:flex;align-items:center;gap:10px;padding:9px 12px;border-top:1px dashed var(--line)}
+  .entry .d{width:74px;font-size:13px;color:var(--ink-soft);font-weight:600;text-transform:capitalize}
+  .entry .h{flex:1;font-size:14px}.entry .h b{font-weight:600}
+  .entry .h .ex{color:var(--buoy);font-size:12px;margin-left:5px;font-weight:600}
+  .entry .h .nt{color:var(--teal);font-size:12px;margin-left:5px}
+  .entry .del{background:transparent;color:var(--muted);font-size:18px;line-height:1;padding:2px 6px;border-radius:6px}
+  .entry .del:active{background:#f0e3cd;color:var(--buoy)}
+  .empty{color:var(--muted);font-size:13.5px;padding:12px;text-align:center}
+  .nomina{position:relative;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin-top:14px;overflow:hidden}
+  .nomina::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--buoy)}
+  .nomina.fin::before{background:var(--teal)}
+  .nomina-h{padding:14px 16px 10px 19px;display:flex;justify-content:space-between;align-items:baseline}
+  .nomina-h .mn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;text-transform:uppercase;letter-spacing:.03em}
+  .nomina-h .tag{font-size:11px;color:var(--muted);text-align:right;max-width:18ch}
+  .lines{padding:0 16px 4px 19px}
+  .ln{display:flex;justify-content:space-between;font-size:13.5px;padding:4px 0;color:var(--ink-soft)}
+  .ln .v{font-variant-numeric:tabular-nums;font-weight:500;color:var(--ink)}
+  .ln.neg .v{color:var(--buoy-dark)}
+  .net{display:flex;justify-content:space-between;align-items:baseline;margin:8px 16px 14px 19px;padding-top:11px;border-top:2px solid var(--ink)}
+  .net .lbl{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-weight:600;font-size:14px}
+  .net .val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:26px;font-variant-numeric:tabular-nums}
+  .total{background:var(--ink);color:var(--sand-2);border-radius:14px;padding:18px 19px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--shadow)}
+  .total .l{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:15px;font-weight:600}
+  .total .l small{display:block;color:#8fc6c4;font-family:'Inter';letter-spacing:0;text-transform:none;font-size:11.5px;font-weight:400;margin-top:2px}
+  .total .v{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:32px;font-variant-numeric:tabular-nums}
+  .note{font-size:11.5px;color:var(--muted);margin-top:12px;padding:0 2px;line-height:1.45}
+  .seclabel{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;font-size:13px;color:var(--ink-soft);font-weight:700;margin:0 2px 2px}
+  .save-state{font-size:11px;color:var(--muted);text-align:center;margin-top:14px}
+  .resetbtn{background:transparent;color:var(--muted);font-size:12px;text-decoration:underline;padding:4px}
+</style>
+</head>
+<body>
+<header>
+  <div class="stripe"></div>
+  <div class="eyebrow">Platja d'Aro · Camping &amp; parc aquàtic</div>
+  <h1>Cuadrante de socorrismo<br>Verano 2026</h1>
+  <p>Apunta las horas de cada día. Las extras (lo que pasa de 40&nbsp;h/semana) se calculan solas y se cobran en la nómina del mes siguiente.</p>
+</header>
+
+<div class="wrap">
+  <section>
+    <div class="panel collapsed" id="paramPanel">
+      <div class="panel-h" onclick="togglePanel('paramPanel')"><h2>Datos y supuestos</h2><span class="chev">▾</span></div>
+      <div class="panel-b">
+        <div class="grid2">
+          <div><label>Salario base bruto / mes</label><input id="p_base" type="number" step="1"></div>
+          <div><label>Precio hora extra (€)</label><input id="p_ot" type="number" step="0.01"></div>
+        </div>
+        <div class="grid2">
+          <div><label>Plus nocturnidad / hora (€)</label><input id="p_noct" type="number" step="0.01"></div>
+          <div><label>Retención IRPF (%)</label><input id="p_irpf" type="number" step="0.5"></div>
+        </div>
+        <div class="grid3">
+          <div><label>Jornada semanal (h)</label><input id="p_week" type="number" step="1"></div>
+          <div><label>Vacaciones / año</label><input id="p_vac" type="number" step="1"></div>
+          <div></div>
+        </div>
+        <div class="grid2">
+          <div><label>Inicio contrato</label><input id="p_start" type="date"></div>
+          <div><label>Fin contrato</label><input id="p_end" type="date"></div>
+        </div>
+        <p class="hint">Extra = horas por encima de 40 h/semana (lunes–domingo). IRPF 0&nbsp;% es el caso probable; súbelo para el caso malo. Seguridad Social automática: ~6,55&nbsp;% sobre base y vacaciones, ~4,70&nbsp;% sobre extras y nocturnidad.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel" id="addPanel">
+      <div class="panel-h" onclick="togglePanel('addPanel')"><h2>Anotar día</h2><span class="chev">▾</span></div>
+      <div class="panel-b">
+        <label>Fecha</label><input id="e_date" type="date">
+        <div class="grid2">
+          <div><label>Horas trabajadas ese día</label><input id="e_hours" type="number" inputmode="decimal" step="0.5" min="0" placeholder="0"></div>
+          <div><label>De ellas, nocturnas (22–6h)</label><input id="e_night" type="number" inputmode="decimal" step="0.5" min="0" placeholder="0"></div>
+        </div>
+        <button class="btn-add" onclick="addEntry()">Guardar día</button>
+        <p class="hint">Pon el total de horas del día. La app decide cuáles son extra según el total de la semana.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="seclabel">Registro por semanas</p>
+    <div id="weeksBox"></div>
+    <div class="backup">
+      <button onclick="exportData()">⬇︎ Copia de seguridad</button>
+      <button onclick="document.getElementById('importFile').click()">⬆︎ Cargar copia</button>
+      <input id="importFile" type="file" accept="application/json" style="display:none" onchange="importData(event)">
+    </div>
+    <p class="hint" style="margin-top:8px">No hace falta tocar esto en el día a día: todo se guarda solo en este dispositivo. Úsalo solo para llevar tus datos a otro aparato.</p>
+  </section>
+
+  <section>
+    <p class="seclabel">Lo que cobrarás cada mes</p>
+    <div id="nominas"></div>
+  </section>
+
+  <div class="total">
+    <div class="l">Total neto temporada<small id="totalDays"></small></div>
+    <div class="v num" id="totalNet">—</div>
+  </div>
+
+  <p class="save-state" id="saveState"></p>
+  <p class="note" id="footnote"></p>
+  <div style="text-align:center;margin-top:10px"><button class="resetbtn" onclick="resetAll()">Vaciar y empezar de cero</button></div>
+</div>
+
+<script>
+window.addEventListener('unhandledrejection',function(e){e.preventDefault();});
+const MONTHS=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const WD=['dom','lun','mar','mié','jue','vie','sáb'];
+const SS_BASE=0.0655, SS_OT=0.0470;
+const DEFAULTS={base:0,ot:13.37,noct:3.20,irpf:0,week:40,vac:31,start:'2026-06-13',end:'2026-09-15'};
+const SEED=[];
+let P={...DEFAULTS}, entries=[], canSave=false;
+
+/* ---- storage: localStorage on a real browser; silent in-memory fallback ---- */
+function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);return true;}catch(e){return false;}}
+function probeStorage(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return true;}catch(e){return false;}}
+
+function load(){
+  canSave=probeStorage();
+  const rp=lsGet('cuad_params');if(rp){try{P={...DEFAULTS,...JSON.parse(rp)};}catch(e){}}
+  const re=lsGet('cuad_entries');
+  if(re){try{entries=JSON.parse(re);}catch(e){entries=SEED.slice();}}else{entries=SEED.slice();saveEntries();}
+  fillParams();render();updateSaveState();
+}
+function saveParams(){lsSet('cuad_params',JSON.stringify(P));}
+function saveEntries(){lsSet('cuad_entries',JSON.stringify(entries));}
+function updateSaveState(){
+  document.getElementById('saveState').textContent = canSave
+    ? '✓ Tus datos se guardan solos en este dispositivo.'
+    : '⚠︎ Este visor no guarda datos. Usa “Copia de seguridad” para no perderlos.';
+}
+
+function fillParams(){
+  p_base.value=P.base;p_ot.value=P.ot;p_noct.value=P.noct;p_irpf.value=P.irpf;
+  p_week.value=P.week;p_vac.value=P.vac;p_start.value=P.start;p_end.value=P.end;
+  if(!e_date.value)e_date.value=P.start;
+}
+[['p_base','base'],['p_ot','ot'],['p_noct','noct'],['p_irpf','irpf'],['p_week','week'],['p_vac','vac'],['p_start','start'],['p_end','end']].forEach(([id,k])=>{
+  document.getElementById(id).addEventListener('change',e=>{P[k]=(k==='start'||k==='end')?e.target.value:parseFloat(e.target.value)||0;saveParams();render();});
+});
+function togglePanel(id){document.getElementById(id).classList.toggle('collapsed');}
+
+function addEntry(){
+  const date=e_date.value,hours=parseFloat(e_hours.value)||0;let night=parseFloat(e_night.value)||0;
+  if(!date||hours<=0){alert('Pon la fecha y las horas trabajadas.');return;}
+  if(night>hours)night=hours;
+  const i=entries.findIndex(x=>x.date===date);
+  if(i>=0)entries[i]={date,hours,night};else entries.push({date,hours,night});
+  entries.sort((a,b)=>a.date<b.date?-1:1);
+  e_hours.value='';e_night.value='';saveEntries();render();
+}
+function delEntry(date){entries=entries.filter(x=>x.date!==date);saveEntries();render();}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify({params:P,entries},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='cuadrante-socorrismo-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();a.remove();
+}
+function importData(ev){
+  const f=ev.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const o=JSON.parse(r.result);if(o.params)P={...DEFAULTS,...o.params};if(Array.isArray(o.entries))entries=o.entries;
+    saveParams();saveEntries();fillParams();render();alert('Copia restaurada.');}catch(e){alert('No se pudo leer el archivo.');}};
+  r.readAsText(f);ev.target.value='';
+}
+
+function eur(n){return n.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';}
+function mondayOf(d){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const off=(t.getUTCDay()+6)%7;t.setUTCDate(t.getUTCDate()-off);return t;}
+function fmtDM(d){return d.getDate()+' '+MONTHS[d.getMonth()].slice(0,3);}
+
+function computeOT(){
+  const weeks={};
+  entries.forEach(x=>{const d=new Date(x.date+'T00:00');const k=mondayOf(d).toISOString().slice(0,10);(weeks[k]=weeks[k]||[]).push(x);});
+  const dayOT={};
+  Object.values(weeks).forEach(list=>{list.sort((a,b)=>a.date<b.date?-1:1);let cum=0;
+    list.forEach(x=>{const b=cum;cum+=x.hours;dayOT[x.date]=Math.max(0,cum-P.week)-Math.max(0,b-P.week);});});
+  return {weeks,dayOT};
+}
+function monthAgg(y,m,dayOT){let otH=0,nH=0;
+  entries.forEach(x=>{const d=new Date(x.date+'T00:00');if(d.getFullYear()===y&&d.getMonth()===m){otH+=dayOT[x.date]||0;nH+=x.night;}});return {otH,nH};}
+function daysInContractMonth(y,m){const s=new Date(P.start+'T00:00'),e=new Date(P.end+'T00:00');const mS=new Date(y,m,1),mE=new Date(y,m+1,0);
+  const from=s>mS?s:mS,to=e<mE?e:mE;if(from>to)return 0;return Math.round((to-from)/86400000)+1;}
+
+function render(){const {weeks,dayOT}=computeOT();renderWeeks(weeks,dayOT);renderNominas(dayOT);}
+function renderWeeks(weeks,dayOT){
+  const box=document.getElementById('weeksBox');const keys=Object.keys(weeks).sort();
+  if(!keys.length){box.innerHTML='<div class="panel"><div class="empty">Sin días anotados todavía.</div></div>';return;}
+  let html='';
+  keys.forEach(k=>{const list=weeks[k].slice().sort((a,b)=>a.date<b.date?-1:1);
+    const mon=new Date(k+'T00:00'),sun=new Date(mon);sun.setDate(sun.getDate()+6);
+    let tot=0,ot=0;list.forEach(x=>{tot+=x.hours;ot+=dayOT[x.date]||0;});
+    html+='<div class="week"><div class="week-h"><span class="wt">Semana '+fmtDM(mon)+' – '+fmtDM(sun)+'</span>'+
+      '<span class="ws">'+tot+' h · '+(ot>0?'<b>'+(+ot.toFixed(2))+' extra</b>':'<span class="ok40">0 extra</span>')+'</span></div>';
+    list.forEach(x=>{const d=new Date(x.date+'T00:00');const o=dayOT[x.date]||0;
+      html+='<div class="entry"><div class="d">'+WD[d.getDay()]+' '+d.getDate()+'</div>'+
+        '<div class="h"><b>'+x.hours+' h</b>'+(o>0?'<span class="ex">'+(+o.toFixed(2))+' extra</span>':'')+(x.night?'<span class="nt">'+x.night+' noct.</span>':'')+'</div>'+
+        '<button class="del" onclick="delEntry(\''+x.date+'\')">×</button></div>';});
+    html+='</div>';});
+  box.innerHTML=html;
+}
+function buildNomina(label,tag,parts,isFin){
+  let gross=0,ss=0;parts.forEach(p=>{gross+=p.gross;ss+=p.gross*(p.kind==='ot'?SS_OT:SS_BASE);});
+  const irpf=gross*(P.irpf/100),net=gross-ss-irpf;let lines='';
+  parts.forEach(p=>{if(p.gross>0.001)lines+='<div class="ln"><span>'+p.name+'</span><span class="v num">'+eur(p.gross)+'</span></div>';});
+  lines+='<div class="ln neg"><span>Seguridad Social</span><span class="v num">− '+eur(ss)+'</span></div>';
+  lines+='<div class="ln neg"><span>IRPF ('+P.irpf+'%)</span><span class="v num">− '+eur(irpf)+'</span></div>';
+  return {net,html:'<div class="nomina'+(isFin?' fin':'')+'"><div class="nomina-h"><div class="mn">'+label+'</div><div class="tag">'+tag+'</div></div><div class="lines">'+lines+'</div><div class="net"><span class="lbl">Neto en mano</span><span class="val num">'+eur(net)+'</span></div></div>'};
+}
+function renderNominas(dayOT){
+  const Y=2026,bd=P.base/30;
+  const baseJun=bd*daysInContractMonth(Y,5),baseSep=bd*daysInContractMonth(Y,8);
+  const jun=monthAgg(Y,5,dayOT),jul=monthAgg(Y,6,dayOT),ago=monthAgg(Y,7,dayOT),sep=monthAgg(Y,8,dayOT);
+  const s=new Date(P.start+'T00:00'),e=new Date(P.end+'T00:00');
+  const worked=Math.round((e-s)/86400000)+1,vacDays=P.vac*worked/365,vacGross=vacDays*bd;
+  let cards=[],total=0,c;
+  c=buildNomina('Junio','Solo base · las extras de junio se cobran en julio',[{name:'Base · '+daysInContractMonth(Y,5)+' días',gross:baseJun,kind:'base'}]);cards.push(c.html);total+=c.net;
+  c=buildNomina('Julio','Base completa + extras de junio',[{name:'Base mensual',gross:P.base,kind:'base'},{name:'Extras junio ('+(+jun.otH.toFixed(2))+' h)',gross:jun.otH*P.ot,kind:'ot'},{name:'Nocturnidad junio ('+jun.nH+' h)',gross:jun.nH*P.noct,kind:'ot'}]);cards.push(c.html);total+=c.net;
+  c=buildNomina('Agosto','Base completa + extras de julio',[{name:'Base mensual',gross:P.base,kind:'base'},{name:'Extras julio ('+(+jul.otH.toFixed(2))+' h)',gross:jul.otH*P.ot,kind:'ot'},{name:'Nocturnidad julio ('+jul.nH+' h)',gross:jul.nH*P.noct,kind:'ot'}]);cards.push(c.html);total+=c.net;
+  c=buildNomina('Septiembre','Finiquito (15 sept): base + extras de agosto y septiembre + vacaciones',[{name:'Base · '+daysInContractMonth(Y,8)+' días',gross:baseSep,kind:'base'},{name:'Extras agosto ('+(+ago.otH.toFixed(2))+' h)',gross:ago.otH*P.ot,kind:'ot'},{name:'Nocturnidad agosto ('+ago.nH+' h)',gross:ago.nH*P.noct,kind:'ot'},{name:'Extras septiembre ('+(+sep.otH.toFixed(2))+' h)',gross:sep.otH*P.ot,kind:'ot'},{name:'Nocturnidad septiembre ('+sep.nH+' h)',gross:sep.nH*P.noct,kind:'ot'},{name:'Vacaciones no disfrutadas ('+vacDays.toFixed(1)+' días)',gross:vacGross,kind:'base'}],true);cards.push(c.html);total+=c.net;
+  document.getElementById('nominas').innerHTML=cards.join('');
+  document.getElementById('totalNet').textContent=eur(total);
+  document.getElementById('totalDays').textContent=worked+' días · vacaciones: '+eur(vacGross)+' bruto';
+  document.getElementById('footnote').innerHTML='Extra = horas por encima de '+P.week+' h/semana (lunes–domingo). En una semana completa de 5 días × 8 h = 40 h, todo lo que pase de 8 h en un día es extra; en semanas sueltas de pocos días puede no llegarse a 40 h y no hay extra. Prorrateo por días naturales (salario ÷ 30). Recuerda el tope de convenio de 80 h extra/año y revisar la renta por tener dos pagadores. Estimación orientativa.';
+}
+function resetAll(){if(!confirm('¿Vaciar todos los días apuntados para empezar de cero? (No se puede deshacer)'))return;entries=[];saveEntries();render();}
+load();
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+</script>
+</body>
+</html>
