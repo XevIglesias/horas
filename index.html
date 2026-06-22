@@ -136,12 +136,6 @@
   <section>
     <p class="seclabel">Registro por semanas</p>
     <div id="weeksBox"></div>
-    <div class="backup">
-      <button onclick="exportData()">⬇︎ Copia de seguridad</button>
-      <button onclick="document.getElementById('importFile').click()">⬆︎ Cargar copia</button>
-      <input id="importFile" type="file" accept="application/json" style="display:none" onchange="importData(event)">
-    </div>
-    <p class="hint" style="margin-top:8px">No hace falta tocar esto en el día a día: todo se guarda solo en este dispositivo. Úsalo solo para llevar tus datos a otro aparato.</p>
   </section>
 
   <section>
@@ -208,19 +202,6 @@ function addEntry(){
   e_hours.value='';e_night.value='';saveEntries();render();
 }
 function delEntry(date){entries=entries.filter(x=>x.date!==date);saveEntries();render();}
-
-function exportData(){
-  const blob=new Blob([JSON.stringify({params:P,entries},null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='cuadrante-socorrismo-'+new Date().toISOString().slice(0,10)+'.json';
-  document.body.appendChild(a);a.click();a.remove();
-}
-function importData(ev){
-  const f=ev.target.files[0];if(!f)return;const r=new FileReader();
-  r.onload=()=>{try{const o=JSON.parse(r.result);if(o.params)P={...DEFAULTS,...o.params};if(Array.isArray(o.entries))entries=o.entries;
-    saveParams();saveEntries();fillParams();render();alert('Copia restaurada.');}catch(e){alert('No se pudo leer el archivo.');}};
-  r.readAsText(f);ev.target.value='';
-}
 
 function eur(n){return n.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';}
 function mondayOf(d){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const off=(t.getUTCDay()+6)%7;t.setUTCDate(t.getUTCDate()-off);return t;}
