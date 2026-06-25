@@ -240,6 +240,7 @@ function render(){const {weeks,dayOT}=computeOT();renderWeeks(weeks,dayOT);rende
 function renderWeeks(weeks,dayOT){
   const box=document.getElementById('weeksBox');const keys=Object.keys(weeks).sort();
   if(!keys.length){box.innerHTML='<div class="panel"><div class="empty">Sin días anotados todavía.</div></div>';return;}
+  const festVal=ANUAL_H>0?P.base*12/ANUAL_H*(P.festPct/100):0;
   let html='';
   keys.forEach(k=>{const list=weeks[k].slice().sort((a,b)=>a.date<b.date?-1:1);
     const mon=new Date(k+'T00:00'),sun=new Date(mon);sun.setDate(sun.getDate()+6);
@@ -248,7 +249,7 @@ function renderWeeks(weeks,dayOT){
       '<span class="ws">'+tot+' h · '+(ot>0?'<b>'+(+ot.toFixed(2))+' extra</b>':'<span class="ok40">0 extra</span>')+'</span></div>';
     list.forEach(x=>{const d=new Date(x.date+'T00:00');const o=dayOT[x.date]||0;
       html+='<div class="entry"><div class="d">'+WD[d.getDay()]+' '+d.getDate()+'</div>'+
-        '<div class="h"><b>'+x.hours+' h</b>'+(o>0?'<span class="ex">'+(+o.toFixed(2))+' extra</span>':'')+(x.night?'<span class="nt">'+x.night+' noct.</span>':'')+(FESTIVOS.has(x.date)?'<span class="ft">festivo</span>':'')+'</div>'+
+        '<div class="h"><b>'+x.hours+' h</b>'+(o>0?'<span class="ex">'+(+o.toFixed(2))+' extra</span>':'')+(x.night?'<span class="nt">'+x.night+' noct.</span>':'')+(FESTIVOS.has(x.date)?'<span class="ft">festivo +'+P.festPct+'% · '+(+(x.hours*festVal).toFixed(2))+' €</span>':'')+'</div>'+
         '<button class="del" onclick="delEntry(\''+x.date+'\')">×</button></div>';});
     html+='</div>';});
   box.innerHTML=html;
@@ -280,7 +281,11 @@ function renderNominas(dayOT){
 }
 function resetAll(){if(!confirm('¿Vaciar todos los días apuntados para empezar de cero? (No se puede deshacer)'))return;entries=[];saveEntries();render();}
 load();
-if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+if('serviceWorker' in navigator){
+  let refreshing=false;
+  navigator.serviceWorker.addEventListener('controllerchange',function(){if(refreshing)return;refreshing=true;location.reload();});
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').then(function(reg){reg.update();}).catch(function(){});});
+}
 </script>
 </body>
 </html>

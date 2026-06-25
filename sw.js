@@ -1,5 +1,5 @@
-/* Service worker: guarda la app para que funcione sin internet una vez abierta. */
-const CACHE = 'cuadrante-v7';
+/* Service worker: la página funciona sin internet, pero con internet siempre carga lo último. */
+const CACHE = 'cuadrante-v8';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -17,13 +17,26 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
-  e.respondWith(
-    caches.match(req).then(hit => hit || fetch(req).then(resp => {
-      if (resp && resp.status === 200 && new URL(req.url).origin === location.origin) {
+  const isHTML = req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html');
+  if (isHTML) {
+    // Network-first para el HTML: con internet, siempre la última versión; sin internet, la cacheada.
+    e.respondWith(
+      fetch(req).then(resp => {
         const copy = resp.clone();
-        caches.open(CACHE).then(c => c.put(req, copy));
-      }
-      return resp;
-    }).catch(() => caches.match('./index.html')))
-  );
+        caches.open(CACHE).then(c => c.put('./index.html', copy));
+        return resp;
+      }).catch(() => caches.match('./index.html').then(r => r || caches.match('./')))
+    );
+  } else {
+    // Cache-first para estáticos (iconos, manifiesto).
+    e.respondWith(
+      caches.match(req).then(hit => hit || fetch(req).then(resp => {
+        if (resp && resp.status === 200 && new URL(req.url).origin === location.origin) {
+          const copy = resp.clone();
+          caches.open(CACHE).then(c => c.put(req, copy));
+        }
+        return resp;
+      }))
+    );
+  }
 });
