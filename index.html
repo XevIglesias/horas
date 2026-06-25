@@ -163,10 +163,19 @@ window.addEventListener('unhandledrejection',function(e){e.preventDefault();});
 const MONTHS=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const WD=['dom','lun','mar','mié','jue','vie','sáb'];
 const SS_BASE=0.0655, SS_OT=0.0470;
-const DEFAULTS={base:0,ot:13.37,noct:3.20,festPct:40,irpf:0,week:40,vac:31,start:'2026-06-13',end:'2026-09-15'};
+const DEFAULTS={base:1986,ot:13.37,noct:3.20,festPct:40,irpf:2,week:40,vac:31,start:'2026-06-13',end:'2026-09-15'};
 const ANUAL_H=1783; // jornada anual hostelería 2026; hora ordinaria = base*12/ANUAL_H
 const FESTIVOS=new Set(['2026-06-24','2026-08-15','2026-09-08','2026-09-11']); // Sant Joan, l'Assumpció, festa local Castell-Platja d'Aro, Diada — recargo +40% + día libre
-const SEED=[];
+const SEED=[
+  {date:'2026-06-13',hours:9,night:0},{date:'2026-06-14',hours:9,night:0},
+  {date:'2026-06-17',hours:9,night:0},{date:'2026-06-18',hours:9,night:0},
+  {date:'2026-06-19',hours:10,night:0},{date:'2026-06-20',hours:10,night:0},
+  {date:'2026-06-21',hours:10,night:0},
+  {date:'2026-06-22',hours:10,night:0},{date:'2026-06-23',hours:10,night:0},
+  {date:'2026-06-24',hours:10,night:0},{date:'2026-06-25',hours:10,night:0},
+  {date:'2026-06-26',hours:10,night:0},{date:'2026-06-27',hours:10,night:0},
+  {date:'2026-06-28',hours:10,night:0}
+];
 let P={...DEFAULTS}, entries=[], canSave=false;
 
 /* ---- storage: localStorage on a real browser; silent in-memory fallback ---- */
