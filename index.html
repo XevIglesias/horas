@@ -185,17 +185,15 @@ function probeStorage(){try{localStorage.setItem('__t','1');localStorage.removeI
 
 function load(){
   canSave=probeStorage();
-  const rp=lsGet('cuad_params');if(rp){try{P={...DEFAULTS,...JSON.parse(rp)};}catch(e){}}
-  const re=lsGet('cuad_entries');
-  if(re){try{entries=JSON.parse(re);}catch(e){entries=SEED.slice();}}else{entries=SEED.slice();saveEntries();}
+  /* Datos FIJOS hard-codeados: la página muestra SIEMPRE estos datos, sin depender del navegador. */
+  P={...DEFAULTS};
+  entries=SEED.slice();
   fillParams();render();updateSaveState();
 }
 function saveParams(){lsSet('cuad_params',JSON.stringify(P));}
 function saveEntries(){lsSet('cuad_entries',JSON.stringify(entries));}
 function updateSaveState(){
-  document.getElementById('saveState').textContent = canSave
-    ? '✓ Tus datos se guardan solos en este dispositivo.'
-    : '⚠︎ Este visor no guarda datos. Usa “Copia de seguridad” para no perderlos.';
+  document.getElementById('saveState').textContent='Datos de la temporada 2026 (vista fija).';
 }
 
 function fillParams(){
