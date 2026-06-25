@@ -105,10 +105,6 @@
           <div><label>Plus nocturnidad / hora (€)</label><input id="p_noct" type="number" step="0.01"></div>
           <div><label>Retención IRPF (%)</label><input id="p_irpf" type="number" step="0.5"></div>
         </div>
-        <div class="grid2">
-          <div><label>Plus festivo / hora (€)</label><input id="p_pfest" type="number" step="0.01"></div>
-          <div></div>
-        </div>
         <div class="grid3">
           <div><label>Jornada semanal (h)</label><input id="p_week" type="number" step="1"></div>
           <div><label>Vacaciones / año</label><input id="p_vac" type="number" step="1"></div>
@@ -163,8 +159,8 @@ window.addEventListener('unhandledrejection',function(e){e.preventDefault();});
 const MONTHS=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const WD=['dom','lun','mar','mié','jue','vie','sáb'];
 const SS_BASE=0.0655, SS_OT=0.0470;
-const DEFAULTS={base:0,ot:13.37,noct:3.20,pfest:11.27,irpf:0,week:40,vac:31,start:'2026-06-13',end:'2026-09-15'};
-const FESTIVOS=new Set(['2026-06-24','2026-08-15','2026-09-08','2026-09-11']); // Sant Joan, l'Assumpció, festa local Castell-Platja d'Aro, Diada
+const DEFAULTS={base:0,ot:13.37,noct:3.20,irpf:0,week:40,vac:31,start:'2026-06-13',end:'2026-09-15'};
+const FESTIVOS=new Set(['2026-06-24','2026-08-15','2026-09-08','2026-09-11']); // Sant Joan, l'Assumpció, festa local Castell-Platja d'Aro, Diada — todas sus horas cuentan como extra
 const SEED=[];
 let P={...DEFAULTS}, entries=[], canSave=false;
 
@@ -189,11 +185,11 @@ function updateSaveState(){
 }
 
 function fillParams(){
-  p_base.value=P.base;p_ot.value=P.ot;p_noct.value=P.noct;p_pfest.value=P.pfest;p_irpf.value=P.irpf;
+  p_base.value=P.base;p_ot.value=P.ot;p_noct.value=P.noct;p_irpf.value=P.irpf;
   p_week.value=P.week;p_vac.value=P.vac;p_start.value=P.start;p_end.value=P.end;
   if(!e_date.value)e_date.value=P.start;
 }
-[['p_base','base'],['p_ot','ot'],['p_noct','noct'],['p_pfest','pfest'],['p_irpf','irpf'],['p_week','week'],['p_vac','vac'],['p_start','start'],['p_end','end']].forEach(([id,k])=>{
+[['p_base','base'],['p_ot','ot'],['p_noct','noct'],['p_irpf','irpf'],['p_week','week'],['p_vac','vac'],['p_start','start'],['p_end','end']].forEach(([id,k])=>{
   document.getElementById(id).addEventListener('change',e=>{P[k]=(k==='start'||k==='end')?e.target.value:parseFloat(e.target.value)||0;saveParams();render();});
 });
 function togglePanel(id){document.getElementById(id).classList.toggle('collapsed');}
@@ -219,10 +215,12 @@ function computeOT(){
   const dayOT={};
   Object.values(weeks).forEach(list=>{list.sort((a,b)=>a.date<b.date?-1:1);let cum=0;
     list.forEach(x=>{const b=cum;cum+=x.hours;dayOT[x.date]=Math.max(0,cum-P.week)-Math.max(0,b-P.week);});});
+  /* Festivo trabajado: TODAS sus horas son extra (aunque la semana no llegue a 40 h) */
+  entries.forEach(x=>{if(FESTIVOS.has(x.date))dayOT[x.date]=x.hours;});
   return {weeks,dayOT};
 }
-function monthAgg(y,m,dayOT){let otH=0,nH=0,festH=0;
-  entries.forEach(x=>{const d=new Date(x.date+'T00:00');if(d.getFullYear()===y&&d.getMonth()===m){otH+=dayOT[x.date]||0;nH+=x.night;if(FESTIVOS.has(x.date))festH+=x.hours;}});return {otH,nH,festH};}
+function monthAgg(y,m,dayOT){let otH=0,nH=0;
+  entries.forEach(x=>{const d=new Date(x.date+'T00:00');if(d.getFullYear()===y&&d.getMonth()===m){otH+=dayOT[x.date]||0;nH+=x.night;}});return {otH,nH};}
 function daysInContractMonth(y,m){const s=new Date(P.start+'T00:00'),e=new Date(P.end+'T00:00');const mS=new Date(y,m,1),mE=new Date(y,m+1,0);
   const from=s>mS?s:mS,to=e<mE?e:mE;if(from>to)return 0;return Math.round((to-from)/86400000)+1;}
 
@@ -259,13 +257,13 @@ function renderNominas(dayOT){
   const worked=Math.round((e-s)/86400000)+1,vacDays=P.vac*worked/365,vacGross=vacDays*bd;
   let cards=[],total=0,c;
   c=buildNomina('Junio','Solo base · las extras de junio se cobran en julio',[{name:'Base · '+daysInContractMonth(Y,5)+' días',gross:baseJun,kind:'base'}]);cards.push(c.html);total+=c.net;
-  c=buildNomina('Julio','Base completa + extras de junio',[{name:'Base mensual',gross:P.base,kind:'base'},{name:'Extras junio ('+(+jun.otH.toFixed(2))+' h)',gross:jun.otH*P.ot,kind:'ot'},{name:'Plus festivo junio ('+(+jun.festH)+' h)',gross:jun.festH*P.pfest,kind:'ot'},{name:'Nocturnidad junio ('+jun.nH+' h)',gross:jun.nH*P.noct,kind:'ot'}]);cards.push(c.html);total+=c.net;
-  c=buildNomina('Agosto','Base completa + extras de julio',[{name:'Base mensual',gross:P.base,kind:'base'},{name:'Extras julio ('+(+jul.otH.toFixed(2))+' h)',gross:jul.otH*P.ot,kind:'ot'},{name:'Plus festivo julio ('+(+jul.festH)+' h)',gross:jul.festH*P.pfest,kind:'ot'},{name:'Nocturnidad julio ('+jul.nH+' h)',gross:jul.nH*P.noct,kind:'ot'}]);cards.push(c.html);total+=c.net;
-  c=buildNomina('Septiembre','Finiquito (15 sept): base + extras de agosto y septiembre + vacaciones',[{name:'Base · '+daysInContractMonth(Y,8)+' días',gross:baseSep,kind:'base'},{name:'Extras agosto ('+(+ago.otH.toFixed(2))+' h)',gross:ago.otH*P.ot,kind:'ot'},{name:'Plus festivo agosto ('+(+ago.festH)+' h)',gross:ago.festH*P.pfest,kind:'ot'},{name:'Nocturnidad agosto ('+ago.nH+' h)',gross:ago.nH*P.noct,kind:'ot'},{name:'Extras septiembre ('+(+sep.otH.toFixed(2))+' h)',gross:sep.otH*P.ot,kind:'ot'},{name:'Plus festivo septiembre ('+(+sep.festH)+' h)',gross:sep.festH*P.pfest,kind:'ot'},{name:'Nocturnidad septiembre ('+sep.nH+' h)',gross:sep.nH*P.noct,kind:'ot'},{name:'Vacaciones no disfrutadas ('+vacDays.toFixed(1)+' días)',gross:vacGross,kind:'base'}],true);cards.push(c.html);total+=c.net;
+  c=buildNomina('Julio','Base completa + extras de junio',[{name:'Base mensual',gross:P.base,kind:'base'},{name:'Extras junio ('+(+jun.otH.toFixed(2))+' h)',gross:jun.otH*P.ot,kind:'ot'},{name:'Nocturnidad junio ('+jun.nH+' h)',gross:jun.nH*P.noct,kind:'ot'}]);cards.push(c.html);total+=c.net;
+  c=buildNomina('Agosto','Base completa + extras de julio',[{name:'Base mensual',gross:P.base,kind:'base'},{name:'Extras julio ('+(+jul.otH.toFixed(2))+' h)',gross:jul.otH*P.ot,kind:'ot'},{name:'Nocturnidad julio ('+jul.nH+' h)',gross:jul.nH*P.noct,kind:'ot'}]);cards.push(c.html);total+=c.net;
+  c=buildNomina('Septiembre','Finiquito (15 sept): base + extras de agosto y septiembre + vacaciones',[{name:'Base · '+daysInContractMonth(Y,8)+' días',gross:baseSep,kind:'base'},{name:'Extras agosto ('+(+ago.otH.toFixed(2))+' h)',gross:ago.otH*P.ot,kind:'ot'},{name:'Nocturnidad agosto ('+ago.nH+' h)',gross:ago.nH*P.noct,kind:'ot'},{name:'Extras septiembre ('+(+sep.otH.toFixed(2))+' h)',gross:sep.otH*P.ot,kind:'ot'},{name:'Nocturnidad septiembre ('+sep.nH+' h)',gross:sep.nH*P.noct,kind:'ot'},{name:'Vacaciones no disfrutadas ('+vacDays.toFixed(1)+' días)',gross:vacGross,kind:'base'}],true);cards.push(c.html);total+=c.net;
   document.getElementById('nominas').innerHTML=cards.join('');
   document.getElementById('totalNet').textContent=eur(total);
   document.getElementById('totalDays').textContent=worked+' días · vacaciones: '+eur(vacGross)+' bruto';
-  document.getElementById('footnote').innerHTML='Extra = horas por encima de '+P.week+' h/semana (lunes–domingo). En una semana completa de 5 días × 8 h = 40 h, todo lo que pase de 8 h en un día es extra; en semanas sueltas de pocos días puede no llegarse a 40 h y no hay extra. Prorrateo por días naturales (salario ÷ 30). Recuerda el tope de convenio de 80 h extra/año y revisar la renta por tener dos pagadores. Festivos marcados (Sant Joan 24 jun, l\'Assumpció 15 ago, festa local 8 sep, Diada 11 sep): cada hora trabajada en festivo suma un plus festivo (11,27 €/h) que se cobra el mes siguiente, además de contar para las extras. Estimación orientativa.';
+  document.getElementById('footnote').innerHTML='Extra = horas por encima de '+P.week+' h/semana (lunes–domingo). En una semana completa de 5 días × 8 h = 40 h, todo lo que pase de 8 h en un día es extra; en semanas sueltas de pocos días puede no llegarse a 40 h y no hay extra. Prorrateo por días naturales (salario ÷ 30). Recuerda el tope de convenio de 80 h extra/año y revisar la renta por tener dos pagadores. Festivos marcados (Sant Joan 24 jun, l\'Assumpció 15 ago, festa local 8 sep, Diada 11 sep): todas las horas trabajadas en festivo cuentan como extra, aunque la semana no llegue a 40 h. Sin plus aparte. Estimación orientativa.';
 }
 function resetAll(){if(!confirm('¿Vaciar todos los días apuntados para empezar de cero? (No se puede deshacer)'))return;entries=[];saveEntries();render();}
 load();
