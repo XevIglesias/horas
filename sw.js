@@ -1,5 +1,5 @@
 /* Service worker: la página funciona sin internet, pero con internet siempre carga lo último. */
-const CACHE = 'cuadrante-v9';
+const CACHE = 'cuadrante-v10';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

@@ -166,15 +166,32 @@ const SS_BASE=0.0655, SS_OT=0.0470;
 const DEFAULTS={base:1986,ot:13.37,noct:3.20,festPct:40,irpf:2,week:40,vac:31,start:'2026-06-13',end:'2026-09-15'};
 const ANUAL_H=1783; // jornada anual hostelería 2026; hora ordinaria = base*12/ANUAL_H
 const FESTIVOS=new Set(['2026-06-24','2026-08-15','2026-09-08','2026-09-11']); // Sant Joan, l'Assumpció, festa local Castell-Platja d'Aro, Diada — recargo +40% + día libre
+/* === SUPUESTO máximo (jun 2026): trabaja TODOS los días, sin librar; sep a 9 h. Reversible: restaurar el SEED de solo junio. === */
 const SEED=[
-  {date:'2026-06-13',hours:9,night:0},{date:'2026-06-14',hours:9,night:0},
-  {date:'2026-06-17',hours:9,night:0},{date:'2026-06-18',hours:9,night:0},
-  {date:'2026-06-19',hours:10,night:0},{date:'2026-06-20',hours:10,night:0},
-  {date:'2026-06-21',hours:10,night:0},
-  {date:'2026-06-22',hours:10,night:0},{date:'2026-06-23',hours:10,night:0},
-  {date:'2026-06-24',hours:10,night:0},{date:'2026-06-25',hours:10,night:0},
-  {date:'2026-06-26',hours:10,night:0},{date:'2026-06-27',hours:10,night:0},
-  {date:'2026-06-28',hours:10,night:0}
+  {date:'2026-06-13',hours:10,night:0},{date:'2026-06-14',hours:10,night:0},{date:'2026-06-15',hours:10,night:0},{date:'2026-06-16',hours:10,night:0},
+  {date:'2026-06-17',hours:10,night:0},{date:'2026-06-18',hours:10,night:0},{date:'2026-06-19',hours:10,night:0},{date:'2026-06-20',hours:10,night:0},
+  {date:'2026-06-21',hours:10,night:0},{date:'2026-06-22',hours:10,night:0},{date:'2026-06-23',hours:10,night:0},{date:'2026-06-24',hours:10,night:0},
+  {date:'2026-06-25',hours:10,night:0},{date:'2026-06-26',hours:10,night:0},{date:'2026-06-27',hours:10,night:0},{date:'2026-06-28',hours:10,night:0},
+  {date:'2026-06-29',hours:10,night:0},{date:'2026-06-30',hours:10,night:0},{date:'2026-07-01',hours:10,night:0},{date:'2026-07-02',hours:10,night:0},
+  {date:'2026-07-03',hours:10,night:0},{date:'2026-07-04',hours:10,night:0},{date:'2026-07-05',hours:10,night:0},{date:'2026-07-06',hours:10,night:0},
+  {date:'2026-07-07',hours:10,night:0},{date:'2026-07-08',hours:10,night:0},{date:'2026-07-09',hours:10,night:0},{date:'2026-07-10',hours:10,night:0},
+  {date:'2026-07-11',hours:10,night:0},{date:'2026-07-12',hours:10,night:0},{date:'2026-07-13',hours:10,night:0},{date:'2026-07-14',hours:10,night:0},
+  {date:'2026-07-15',hours:10,night:0},{date:'2026-07-16',hours:10,night:0},{date:'2026-07-17',hours:10,night:0},{date:'2026-07-18',hours:10,night:0},
+  {date:'2026-07-19',hours:10,night:0},{date:'2026-07-20',hours:10,night:0},{date:'2026-07-21',hours:10,night:0},{date:'2026-07-22',hours:10,night:0},
+  {date:'2026-07-23',hours:10,night:0},{date:'2026-07-24',hours:10,night:0},{date:'2026-07-25',hours:10,night:0},{date:'2026-07-26',hours:10,night:0},
+  {date:'2026-07-27',hours:10,night:0},{date:'2026-07-28',hours:10,night:0},{date:'2026-07-29',hours:10,night:0},{date:'2026-07-30',hours:10,night:0},
+  {date:'2026-07-31',hours:10,night:0},{date:'2026-08-01',hours:10,night:0},{date:'2026-08-02',hours:10,night:0},{date:'2026-08-03',hours:10,night:0},
+  {date:'2026-08-04',hours:10,night:0},{date:'2026-08-05',hours:10,night:0},{date:'2026-08-06',hours:10,night:0},{date:'2026-08-07',hours:10,night:0},
+  {date:'2026-08-08',hours:10,night:0},{date:'2026-08-09',hours:10,night:0},{date:'2026-08-10',hours:10,night:0},{date:'2026-08-11',hours:10,night:0},
+  {date:'2026-08-12',hours:10,night:0},{date:'2026-08-13',hours:10,night:0},{date:'2026-08-14',hours:10,night:0},{date:'2026-08-15',hours:10,night:0},
+  {date:'2026-08-16',hours:10,night:0},{date:'2026-08-17',hours:10,night:0},{date:'2026-08-18',hours:10,night:0},{date:'2026-08-19',hours:10,night:0},
+  {date:'2026-08-20',hours:10,night:0},{date:'2026-08-21',hours:10,night:0},{date:'2026-08-22',hours:10,night:0},{date:'2026-08-23',hours:10,night:0},
+  {date:'2026-08-24',hours:10,night:0},{date:'2026-08-25',hours:10,night:0},{date:'2026-08-26',hours:10,night:0},{date:'2026-08-27',hours:10,night:0},
+  {date:'2026-08-28',hours:10,night:0},{date:'2026-08-29',hours:10,night:0},{date:'2026-08-30',hours:10,night:0},{date:'2026-08-31',hours:10,night:0},
+  {date:'2026-09-01',hours:9,night:0},{date:'2026-09-02',hours:9,night:0},{date:'2026-09-03',hours:9,night:0},{date:'2026-09-04',hours:9,night:0},
+  {date:'2026-09-05',hours:9,night:0},{date:'2026-09-06',hours:9,night:0},{date:'2026-09-07',hours:9,night:0},{date:'2026-09-08',hours:9,night:0},
+  {date:'2026-09-09',hours:9,night:0},{date:'2026-09-10',hours:9,night:0},{date:'2026-09-11',hours:9,night:0},{date:'2026-09-12',hours:9,night:0},
+  {date:'2026-09-13',hours:9,night:0},{date:'2026-09-14',hours:9,night:0},{date:'2026-09-15',hours:9,night:0}
 ];
 let P={...DEFAULTS}, entries=[], canSave=false;
 
