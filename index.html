@@ -231,29 +231,33 @@ const WD=['dom','lun','mar','mié','jue','vie','sáb'];
 const SS_BASE=0.0655, SS_OT=0.0470;
 const DEFAULTS={base:1986,ot:13.37,noct:3.20,festPct:40,irpf:2,week:40,vac:31,start:'2026-06-13',end:'2026-09-15'};
 const ANUAL_H=1783; // jornada anual hostelería 2026; hora ordinaria = base*12/ANUAL_H
-const FESTIVOS=new Set(['2026-06-24','2026-08-15','2026-09-08','2026-09-11']); // Sant Joan, l'Assumpció, festa local Castell-Platja d'Aro, Diada — recargo +40% + día libre
-/* === SUPUESTO (jun 2026): trabaja todo el verano librando 1 día/semana (los lunes); festivos a full (10 h). Reversible: restaurar el SEED de solo junio. === */
+const FESTIVOS=new Set([]); // El Delfín Verde NO paga recargo de festivo (ni +40% ni doble): las horas de festivo se cobran solo como horas extra normales. Vaciado a petición de Xavier (jul 2026) hasta que la empresa cumpla la ley.
+/* === DATOS REALES de fichaje (jul 2026): junio 13–30 y julio 1–11 son las horas EXACTAS del fichaje de la empresa. Desde julio 12 hasta el 15 sep es una ESTIMACIÓN (10 h/día librando lunes; septiembre 9 h) para ver el total previsto de temporada; se irá sustituyendo por horas reales cada semana. === */
 const SEED=[
-  {date:'2026-06-13',hours:10,night:0},{date:'2026-06-14',hours:10,night:0},{date:'2026-06-16',hours:10,night:0},{date:'2026-06-17',hours:10,night:0},
-  {date:'2026-06-18',hours:10,night:0},{date:'2026-06-19',hours:10,night:0},{date:'2026-06-20',hours:10,night:0},{date:'2026-06-21',hours:10,night:0},
+  /* --- REALES junio (contrato desde 13; libró 15, 16 y 29) --- */
+  {date:'2026-06-13',hours:9,night:0},{date:'2026-06-14',hours:9,night:0},{date:'2026-06-17',hours:9,night:0},{date:'2026-06-18',hours:9,night:0},
+  {date:'2026-06-19',hours:10,night:0},{date:'2026-06-20',hours:10,night:0},{date:'2026-06-21',hours:10,night:0},{date:'2026-06-22',hours:10,night:0},
   {date:'2026-06-23',hours:10,night:0},{date:'2026-06-24',hours:10,night:0},{date:'2026-06-25',hours:10,night:0},{date:'2026-06-26',hours:10,night:0},
-  {date:'2026-06-27',hours:10,night:0},{date:'2026-06-28',hours:10,night:0},{date:'2026-06-30',hours:10,night:0},{date:'2026-07-01',hours:10,night:0},
-  {date:'2026-07-02',hours:10,night:0},{date:'2026-07-03',hours:10,night:0},{date:'2026-07-04',hours:10,night:0},{date:'2026-07-05',hours:10,night:0},
-  {date:'2026-07-07',hours:10,night:0},{date:'2026-07-08',hours:10,night:0},{date:'2026-07-09',hours:10,night:0},{date:'2026-07-10',hours:10,night:0},
-  {date:'2026-07-11',hours:10,night:0},{date:'2026-07-12',hours:10,night:0},{date:'2026-07-14',hours:10,night:0},{date:'2026-07-15',hours:10,night:0},
-  {date:'2026-07-16',hours:10,night:0},{date:'2026-07-17',hours:10,night:0},{date:'2026-07-18',hours:10,night:0},{date:'2026-07-19',hours:10,night:0},
-  {date:'2026-07-21',hours:10,night:0},{date:'2026-07-22',hours:10,night:0},{date:'2026-07-23',hours:10,night:0},{date:'2026-07-24',hours:10,night:0},
-  {date:'2026-07-25',hours:10,night:0},{date:'2026-07-26',hours:10,night:0},{date:'2026-07-28',hours:10,night:0},{date:'2026-07-29',hours:10,night:0},
-  {date:'2026-07-30',hours:10,night:0},{date:'2026-07-31',hours:10,night:0},{date:'2026-08-01',hours:10,night:0},{date:'2026-08-02',hours:10,night:0},
-  {date:'2026-08-04',hours:10,night:0},{date:'2026-08-05',hours:10,night:0},{date:'2026-08-06',hours:10,night:0},{date:'2026-08-07',hours:10,night:0},
-  {date:'2026-08-08',hours:10,night:0},{date:'2026-08-09',hours:10,night:0},{date:'2026-08-11',hours:10,night:0},{date:'2026-08-12',hours:10,night:0},
-  {date:'2026-08-13',hours:10,night:0},{date:'2026-08-14',hours:10,night:0},{date:'2026-08-15',hours:10,night:0},{date:'2026-08-16',hours:10,night:0},
-  {date:'2026-08-18',hours:10,night:0},{date:'2026-08-19',hours:10,night:0},{date:'2026-08-20',hours:10,night:0},{date:'2026-08-21',hours:10,night:0},
-  {date:'2026-08-22',hours:10,night:0},{date:'2026-08-23',hours:10,night:0},{date:'2026-08-25',hours:10,night:0},{date:'2026-08-26',hours:10,night:0},
-  {date:'2026-08-27',hours:10,night:0},{date:'2026-08-28',hours:10,night:0},{date:'2026-08-29',hours:10,night:0},{date:'2026-08-30',hours:10,night:0},
+  {date:'2026-06-27',hours:9.08,night:0},{date:'2026-06-28',hours:10,night:0},{date:'2026-06-30',hours:10,night:0},
+  /* --- REALES julio (hasta el 11) --- */
+  {date:'2026-07-01',hours:10,night:0},{date:'2026-07-02',hours:10,night:0},{date:'2026-07-03',hours:4.23,night:0},{date:'2026-07-04',hours:10,night:0},
+  {date:'2026-07-05',hours:9,night:0},{date:'2026-07-06',hours:10,night:0},{date:'2026-07-07',hours:10,night:0},{date:'2026-07-08',hours:10,night:0},
+  {date:'2026-07-09',hours:10,night:0},{date:'2026-07-10',hours:10,night:0},{date:'2026-07-11',hours:10,night:0},
+  /* --- ESTIMACIÓN resto de temporada (12 jul – 15 sep) --- */
+  {date:'2026-07-12',hours:10,night:0},{date:'2026-07-14',hours:10,night:0},{date:'2026-07-15',hours:10,night:0},{date:'2026-07-16',hours:10,night:0},
+  {date:'2026-07-17',hours:10,night:0},{date:'2026-07-18',hours:10,night:0},{date:'2026-07-19',hours:10,night:0},{date:'2026-07-21',hours:10,night:0},
+  {date:'2026-07-22',hours:10,night:0},{date:'2026-07-23',hours:10,night:0},{date:'2026-07-24',hours:10,night:0},{date:'2026-07-25',hours:10,night:0},
+  {date:'2026-07-26',hours:10,night:0},{date:'2026-07-28',hours:10,night:0},{date:'2026-07-29',hours:10,night:0},{date:'2026-07-30',hours:10,night:0},
+  {date:'2026-07-31',hours:10,night:0},{date:'2026-08-01',hours:10,night:0},{date:'2026-08-02',hours:10,night:0},{date:'2026-08-04',hours:10,night:0},
+  {date:'2026-08-05',hours:10,night:0},{date:'2026-08-06',hours:10,night:0},{date:'2026-08-07',hours:10,night:0},{date:'2026-08-08',hours:10,night:0},
+  {date:'2026-08-09',hours:10,night:0},{date:'2026-08-11',hours:10,night:0},{date:'2026-08-12',hours:10,night:0},{date:'2026-08-13',hours:10,night:0},
+  {date:'2026-08-14',hours:10,night:0},{date:'2026-08-15',hours:10,night:0},{date:'2026-08-16',hours:10,night:0},{date:'2026-08-18',hours:10,night:0},
+  {date:'2026-08-19',hours:10,night:0},{date:'2026-08-20',hours:10,night:0},{date:'2026-08-21',hours:10,night:0},{date:'2026-08-22',hours:10,night:0},
+  {date:'2026-08-23',hours:10,night:0},{date:'2026-08-25',hours:10,night:0},{date:'2026-08-26',hours:10,night:0},{date:'2026-08-27',hours:10,night:0},
+  {date:'2026-08-28',hours:10,night:0},{date:'2026-08-29',hours:10,night:0},{date:'2026-08-30',hours:10,night:0},
   {date:'2026-09-01',hours:9,night:0},{date:'2026-09-02',hours:9,night:0},{date:'2026-09-03',hours:9,night:0},{date:'2026-09-04',hours:9,night:0},
-  {date:'2026-09-05',hours:9,night:0},{date:'2026-09-06',hours:9,night:0},{date:'2026-09-08',hours:10,night:0},{date:'2026-09-09',hours:9,night:0},
-  {date:'2026-09-10',hours:9,night:0},{date:'2026-09-11',hours:10,night:0},{date:'2026-09-12',hours:9,night:0},{date:'2026-09-13',hours:9,night:0},
+  {date:'2026-09-05',hours:9,night:0},{date:'2026-09-06',hours:9,night:0},{date:'2026-09-08',hours:9,night:0},{date:'2026-09-09',hours:9,night:0},
+  {date:'2026-09-10',hours:9,night:0},{date:'2026-09-11',hours:9,night:0},{date:'2026-09-12',hours:9,night:0},{date:'2026-09-13',hours:9,night:0},
   {date:'2026-09-14',hours:9,night:0},{date:'2026-09-15',hours:9,night:0}
 ];
 let P={...DEFAULTS}, entries=[], canSave=false;
@@ -273,7 +277,7 @@ function load(){
 function saveParams(){lsSet('cuad_params',JSON.stringify(P));}
 function saveEntries(){lsSet('cuad_entries',JSON.stringify(entries));}
 function updateSaveState(){
-  document.getElementById('saveState').textContent='Datos de la temporada 2026 (vista fija).';
+  document.getElementById('saveState').textContent='Junio y julio (hasta el 11): horas reales de fichaje. Resto del verano: estimación.';
 }
 
 function fillParams(){
@@ -355,7 +359,7 @@ function renderNominas(dayOT){
   document.getElementById('nominas').innerHTML=cards.join('');
   document.getElementById('totalNet').textContent=eur(total);
   document.getElementById('totalDays').textContent=worked+' días · vacaciones: '+eur(vacGross)+' bruto';
-  document.getElementById('footnote').innerHTML='Extra = horas por encima de '+P.week+' h/semana (lunes–domingo). En una semana completa de 5 días × 8 h = 40 h, todo lo que pase de 8 h en un día es extra; en semanas sueltas de pocos días puede no llegarse a 40 h y no hay extra. Prorrateo por días naturales (salario ÷ 30). Recuerda el tope de convenio de 80 h extra/año y revisar la renta por tener dos pagadores. Festivos (Sant Joan 24 jun, l\'Assumpció 15 ago, festa local 8 sep, Diada 11 sep): cada hora trabajada en festivo lleva un recargo del '+P.festPct+'% sobre la hora ordinaria (base×12/1783) y se cobra el mes siguiente; además, cada festivo trabajado genera 1 día libre de compensación (no contabilizado en dinero). Las horas de festivo también suman para las extras de +40 h/semana. Estimación orientativa.';
+  document.getElementById('footnote').innerHTML='Extra = horas por encima de '+P.week+' h/semana (lunes–domingo). En una semana completa de 5 días × 8 h = 40 h, todo lo que pase de 8 h en un día es extra; en semanas sueltas de pocos días puede no llegarse a 40 h y no hay extra. Prorrateo por días naturales (salario ÷ 30). Recuerda el tope de convenio de 80 h extra/año y revisar la renta por tener dos pagadores. <b>Festivos:</b> las horas trabajadas en festivo (Sant Joan, etc.) se pagan solo como horas extra normales; El Delfín Verde no abona ningún recargo de festivo, así que aquí no se suma plus (aunque por ley te correspondería y podrías reclamarlo). <b>Datos:</b> junio y julio (hasta el 11) son horas reales de fichaje; del 12 jul al 15 sep es una estimación. Estimación orientativa.';
 }
 function resetAll(){if(!confirm('¿Vaciar todos los días apuntados para empezar de cero? (No se puede deshacer)'))return;entries=[];saveEntries();render();}
 /* ---- pestañas inferiores ---- */
