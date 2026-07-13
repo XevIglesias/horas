@@ -208,7 +208,7 @@
             <div><label>Derivación</label><select id="i_deriv"><option>Ninguna</option><option>Botiquín / reposo</option><option>112 / ambulancia</option><option>Centro médico</option><option>Familia / tutor</option></select></div>
           </div>
           <button class="btn-add" onclick="addIncidencia()">Guardar incidencia</button>
-          <p class="hint">Cada incidencia se guarda como una ficha aparte, en este dispositivo.</p>
+          <p class="hint">Cada incidencia se guarda como una ficha aparte, en la nube.</p>
         </div>
       </div>
     </section>
@@ -232,52 +232,45 @@ const SS_BASE=0.0655, SS_OT=0.0470;
 const DEFAULTS={base:1986,ot:13.37,noct:3.20,festPct:40,irpf:2,week:40,vac:31,start:'2026-06-13',end:'2026-09-15'};
 const ANUAL_H=1783; // jornada anual hostelería 2026; hora ordinaria = base*12/ANUAL_H
 const FESTIVOS=new Set([]); // El Delfín Verde NO paga recargo de festivo (ni +40% ni doble): las horas de festivo se cobran solo como horas extra normales. Vaciado a petición de Xavier (jul 2026) hasta que la empresa cumpla la ley.
-/* === DATOS REALES de fichaje (jul 2026): junio 13–30 y julio 1–11 son las horas EXACTAS del fichaje de la empresa. Desde julio 12 hasta el 15 sep es una ESTIMACIÓN (10 h/día librando lunes; septiembre 9 h) para ver el total previsto de temporada; se irá sustituyendo por horas reales cada semana. === */
-const SEED=[
-  /* --- REALES junio (contrato desde 13; libró 15, 16 y 29) --- */
-  {date:'2026-06-13',hours:9,night:0},{date:'2026-06-14',hours:9,night:0},{date:'2026-06-17',hours:9,night:0},{date:'2026-06-18',hours:9,night:0},
-  {date:'2026-06-19',hours:10,night:0},{date:'2026-06-20',hours:10,night:0},{date:'2026-06-21',hours:10,night:0},{date:'2026-06-22',hours:10,night:0},
-  {date:'2026-06-23',hours:10,night:0},{date:'2026-06-24',hours:10,night:0},{date:'2026-06-25',hours:10,night:0},{date:'2026-06-26',hours:10,night:0},
-  {date:'2026-06-27',hours:9.08,night:0},{date:'2026-06-28',hours:10,night:0},{date:'2026-06-30',hours:10,night:0},
-  /* --- REALES julio (hasta el 11) --- */
-  {date:'2026-07-01',hours:10,night:0},{date:'2026-07-02',hours:10,night:0},{date:'2026-07-03',hours:4.23,night:0},{date:'2026-07-04',hours:10,night:0},
-  {date:'2026-07-05',hours:9,night:0},{date:'2026-07-06',hours:10,night:0},{date:'2026-07-07',hours:10,night:0},{date:'2026-07-08',hours:10,night:0},
-  {date:'2026-07-09',hours:10,night:0},{date:'2026-07-10',hours:10,night:0},{date:'2026-07-11',hours:10,night:0},
-  /* --- ESTIMACIÓN resto de temporada (12 jul – 15 sep) --- */
-  {date:'2026-07-12',hours:10,night:0},{date:'2026-07-14',hours:10,night:0},{date:'2026-07-15',hours:10,night:0},{date:'2026-07-16',hours:10,night:0},
-  {date:'2026-07-17',hours:10,night:0},{date:'2026-07-18',hours:10,night:0},{date:'2026-07-19',hours:10,night:0},{date:'2026-07-21',hours:10,night:0},
-  {date:'2026-07-22',hours:10,night:0},{date:'2026-07-23',hours:10,night:0},{date:'2026-07-24',hours:10,night:0},{date:'2026-07-25',hours:10,night:0},
-  {date:'2026-07-26',hours:10,night:0},{date:'2026-07-28',hours:10,night:0},{date:'2026-07-29',hours:10,night:0},{date:'2026-07-30',hours:10,night:0},
-  {date:'2026-07-31',hours:10,night:0},{date:'2026-08-01',hours:10,night:0},{date:'2026-08-02',hours:10,night:0},{date:'2026-08-04',hours:10,night:0},
-  {date:'2026-08-05',hours:10,night:0},{date:'2026-08-06',hours:10,night:0},{date:'2026-08-07',hours:10,night:0},{date:'2026-08-08',hours:10,night:0},
-  {date:'2026-08-09',hours:10,night:0},{date:'2026-08-11',hours:10,night:0},{date:'2026-08-12',hours:10,night:0},{date:'2026-08-13',hours:10,night:0},
-  {date:'2026-08-14',hours:10,night:0},{date:'2026-08-15',hours:10,night:0},{date:'2026-08-16',hours:10,night:0},{date:'2026-08-18',hours:10,night:0},
-  {date:'2026-08-19',hours:10,night:0},{date:'2026-08-20',hours:10,night:0},{date:'2026-08-21',hours:10,night:0},{date:'2026-08-22',hours:10,night:0},
-  {date:'2026-08-23',hours:10,night:0},{date:'2026-08-25',hours:10,night:0},{date:'2026-08-26',hours:10,night:0},{date:'2026-08-27',hours:10,night:0},
-  {date:'2026-08-28',hours:10,night:0},{date:'2026-08-29',hours:10,night:0},{date:'2026-08-30',hours:10,night:0},
-  {date:'2026-09-01',hours:9,night:0},{date:'2026-09-02',hours:9,night:0},{date:'2026-09-03',hours:9,night:0},{date:'2026-09-04',hours:9,night:0},
-  {date:'2026-09-05',hours:9,night:0},{date:'2026-09-06',hours:9,night:0},{date:'2026-09-08',hours:9,night:0},{date:'2026-09-09',hours:9,night:0},
-  {date:'2026-09-10',hours:9,night:0},{date:'2026-09-11',hours:9,night:0},{date:'2026-09-12',hours:9,night:0},{date:'2026-09-13',hours:9,night:0},
-  {date:'2026-09-14',hours:9,night:0},{date:'2026-09-15',hours:9,night:0}
-];
+/* === DATOS EN LA NUBE (jul 2026): las horas viven en Supabase (tabla `entries`). Junio 13–30 y julio 1–11 son las horas EXACTAS del fichaje de la empresa; del 12 jul al 15 sep hay una ESTIMACIÓN (10 h/día librando lunes; septiembre 9 h) que se va sustituyendo por horas reales al anotarlas. === */
 let P={...DEFAULTS}, entries=[], canSave=false;
 
-/* ---- storage: localStorage on a real browser; silent in-memory fallback ---- */
+/* ---- Base de datos en la nube (Supabase, plan gratuito) ---- */
+const SB_URL='https://keleemlaztsuxradibdc.supabase.co';
+const SB_KEY='sb_publishable_5LvkAziUCh8R7g8nkm47hg_VM7Kl_bc'; /* clave pública, segura en el navegador */
+function sbHeaders(extra){return Object.assign({'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},extra||{});}
+async function sbFetch(path,opts){
+  const r=await fetch(SB_URL+'/rest/v1/'+path,Object.assign({headers:sbHeaders(opts&&opts.prefer?{'Prefer':opts.prefer}:null)},opts));
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  return r;
+}
+
+/* ---- storage local: copia para abrir sin conexión ---- */
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);return true;}catch(e){return false;}}
-function probeStorage(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return true;}catch(e){return false;}}
 
-function load(){
-  canSave=probeStorage();
-  /* Datos FIJOS hard-codeados: la página muestra SIEMPRE estos datos, sin depender del navegador. */
+async function load(){
   P={...DEFAULTS};
-  entries=SEED.slice();
-  fillParams();render();updateSaveState();
+  fillParams();
+  /* 1) pinta al instante con la última copia local */
+  const c=lsGet('cuad_entries');
+  if(c){try{entries=JSON.parse(c);}catch(e){entries=[];}}
+  render();updateSaveState('Cargando de la nube…');
+  /* 2) trae lo último de la nube */
+  try{
+    const r=await sbFetch('entries?select=date,hours,night&order=date');
+    const rows=await r.json();
+    entries=rows.map(function(x){return {date:x.date,hours:+x.hours,night:+x.night};});
+    lsSet('cuad_entries',JSON.stringify(entries));
+    render();updateSaveState('');
+  }catch(e){
+    updateSaveState('⚠️ Sin conexión con la nube: mostrando la última copia de este dispositivo.');
+  }
 }
 function saveParams(){lsSet('cuad_params',JSON.stringify(P));}
 function saveEntries(){lsSet('cuad_entries',JSON.stringify(entries));}
-function updateSaveState(){
-  document.getElementById('saveState').textContent='Junio y julio (hasta el 11): horas reales de fichaje. Resto del verano: estimación.';
+function updateSaveState(msg){
+  document.getElementById('saveState').textContent=msg!==undefined&&msg!==''?msg:'☁️ Guardado en la nube: verás lo mismo en cualquier dispositivo. Junio y julio (hasta el 11) son horas reales de fichaje; el resto, estimación.';
 }
 
 function fillParams(){
@@ -290,16 +283,24 @@ function fillParams(){
 });
 function togglePanel(id){document.getElementById(id).classList.toggle('collapsed');}
 
-function addEntry(){
+async function addEntry(){
   const date=e_date.value,hours=parseFloat(e_hours.value)||0;let night=parseFloat(e_night.value)||0;
   if(!date||hours<=0){alert('Pon la fecha y las horas trabajadas.');return;}
   if(night>hours)night=hours;
+  try{
+    await sbFetch('entries',{method:'POST',prefer:'resolution=merge-duplicates,return=minimal',body:JSON.stringify([{date:date,hours:hours,night:night}])});
+  }catch(e){alert('No se ha podido guardar en la nube. Revisa la conexión e inténtalo otra vez.');return;}
   const i=entries.findIndex(x=>x.date===date);
   if(i>=0)entries[i]={date,hours,night};else entries.push({date,hours,night});
   entries.sort((a,b)=>a.date<b.date?-1:1);
-  e_hours.value='';e_night.value='';saveEntries();render();
+  e_hours.value='';e_night.value='';saveEntries();render();updateSaveState('');
 }
-function delEntry(date){entries=entries.filter(x=>x.date!==date);saveEntries();render();}
+async function delEntry(date){
+  try{
+    await sbFetch('entries?date=eq.'+date,{method:'DELETE'});
+  }catch(e){alert('No se ha podido borrar en la nube. Revisa la conexión e inténtalo otra vez.');return;}
+  entries=entries.filter(x=>x.date!==date);saveEntries();render();
+}
 
 function eur(n){return n.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';}
 function mondayOf(d){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const off=(t.getUTCDay()+6)%7;t.setUTCDate(t.getUTCDate()-off);return t;}
@@ -361,7 +362,13 @@ function renderNominas(dayOT){
   document.getElementById('totalDays').textContent=worked+' días · vacaciones: '+eur(vacGross)+' bruto';
   document.getElementById('footnote').innerHTML='Extra = horas por encima de '+P.week+' h/semana (lunes–domingo). En una semana completa de 5 días × 8 h = 40 h, todo lo que pase de 8 h en un día es extra; en semanas sueltas de pocos días puede no llegarse a 40 h y no hay extra. Prorrateo por días naturales (salario ÷ 30). Recuerda el tope de convenio de 80 h extra/año y revisar la renta por tener dos pagadores. <b>Festivos:</b> las horas trabajadas en festivo (Sant Joan, etc.) se pagan solo como horas extra normales; El Delfín Verde no abona ningún recargo de festivo, así que aquí no se suma plus (aunque por ley te correspondería y podrías reclamarlo). <b>Datos:</b> junio y julio (hasta el 11) son horas reales de fichaje; del 12 jul al 15 sep es una estimación. Estimación orientativa.';
 }
-function resetAll(){if(!confirm('¿Vaciar todos los días apuntados para empezar de cero? (No se puede deshacer)'))return;entries=[];saveEntries();render();}
+async function resetAll(){
+  if(!confirm('¿Vaciar TODOS los días apuntados (también en la nube) para empezar de cero? (No se puede deshacer)'))return;
+  try{
+    await sbFetch('entries?date=gte.1900-01-01',{method:'DELETE'});
+  }catch(e){alert('No se ha podido vaciar la nube. Revisa la conexión e inténtalo otra vez.');return;}
+  entries=[];saveEntries();render();
+}
 /* ---- pestañas inferiores ---- */
 function switchTab(name){
   ['horas','incidencias'].forEach(function(t){
@@ -371,21 +378,40 @@ function switchTab(name){
   window.scrollTo(0,0);
 }
 
-/* ---- incidencias (se guardan en este dispositivo) ---- */
+/* ---- incidencias (se guardan en la nube, con copia local) ---- */
 let incidencias=[];
-function loadInc(){const r=lsGet('cuad_incidencias');if(r){try{incidencias=JSON.parse(r);}catch(e){incidencias=[];}}renderIncidencias();}
+async function loadInc(){
+  const r=lsGet('cuad_incidencias');
+  if(r){try{incidencias=JSON.parse(r);}catch(e){incidencias=[];}}
+  renderIncidencias();
+  try{
+    const resp=await sbFetch('incidencias?select=*&order=id.desc');
+    const rows=await resp.json();
+    incidencias=rows.map(function(x){return {id:x.id,fecha:x.fecha,zona:x.zona,tipo:x.tipo,grav:x.grav,persona:x.persona,edad:x.edad,desc:x.descr,actua:x.actua,socorrista:x.socorrista,deriv:x.deriv};});
+    saveInc();renderIncidencias();
+  }catch(e){/* sin conexión: se queda la copia local */}
+}
 function saveInc(){lsSet('cuad_incidencias',JSON.stringify(incidencias));}
 function escHtml(s){return (s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 function fmtFecha(s){if(!s)return '—';const d=new Date(s);if(isNaN(d.getTime()))return s;return d.toLocaleString('es-ES',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}
-function addIncidencia(){
+async function addIncidencia(){
   const g=function(id){return document.getElementById(id).value.trim();};
   const inc={id:Date.now(),fecha:g('i_fecha'),zona:g('i_zona'),tipo:g('i_tipo'),grav:g('i_grav'),persona:g('i_persona'),edad:g('i_edad'),desc:g('i_desc'),actua:g('i_actua'),socorrista:g('i_socorrista'),deriv:g('i_deriv')};
   if(!inc.desc){alert('Pon al menos una descripción de la incidencia.');return;}
+  try{
+    await sbFetch('incidencias',{method:'POST',prefer:'return=minimal',body:JSON.stringify([{id:inc.id,fecha:inc.fecha,zona:inc.zona,tipo:inc.tipo,grav:inc.grav,persona:inc.persona,edad:inc.edad,descr:inc.desc,actua:inc.actua,socorrista:inc.socorrista,deriv:inc.deriv}])});
+  }catch(e){alert('No se ha podido guardar la incidencia en la nube. Revisa la conexión e inténtalo otra vez.');return;}
   incidencias.unshift(inc);saveInc();renderIncidencias();
   ['i_persona','i_edad','i_desc','i_actua','i_socorrista'].forEach(function(id){document.getElementById(id).value='';});
   alert('Incidencia guardada.');
 }
-function delIncidencia(id){if(!confirm('¿Borrar esta incidencia?'))return;incidencias=incidencias.filter(function(x){return x.id!==id;});saveInc();renderIncidencias();}
+async function delIncidencia(id){
+  if(!confirm('¿Borrar esta incidencia?'))return;
+  try{
+    await sbFetch('incidencias?id=eq.'+id,{method:'DELETE'});
+  }catch(e){alert('No se ha podido borrar la incidencia en la nube. Revisa la conexión e inténtalo otra vez.');return;}
+  incidencias=incidencias.filter(function(x){return x.id!==id;});saveInc();renderIncidencias();
+}
 function renderIncidencias(){
   const box=document.getElementById('incBox');if(!box)return;
   if(!incidencias.length){box.innerHTML='<div class="panel"><div class="inc-empty">Sin incidencias registradas.</div></div>';return;}
