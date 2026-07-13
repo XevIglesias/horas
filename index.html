@@ -82,31 +82,6 @@
   .seclabel{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;font-size:13px;color:var(--ink-soft);font-weight:700;margin:0 2px 2px}
   .save-state{font-size:11px;color:var(--muted);text-align:center;margin-top:14px}
   .resetbtn{background:transparent;color:var(--muted);font-size:12px;text-decoration:underline;padding:4px}
-  /* ---- barra de pestañas inferior ---- */
-  body{padding-bottom:78px}
-  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;background:var(--ink);border-top:3px solid var(--buoy);padding-bottom:env(safe-area-inset-bottom)}
-  .tabbar button{flex:1;background:transparent;color:#8fc6c4;border:none;padding:9px 4px 8px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.05em;font-weight:600;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
-  .tabbar button .ic{font-size:19px;line-height:1}
-  .tabbar button.active{color:#fff}
-  .tabpanel[hidden]{display:none}
-  /* ---- incidencias ---- */
-  textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 11px;resize:vertical;min-height:64px}
-  textarea:focus,select:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
-  select{width:100%;font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 11px}
-  .inc-card{position:relative;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--buoy);border-radius:12px;box-shadow:var(--shadow);padding:13px 15px;margin-top:12px}
-  .inc-card h3{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;margin:0 22px 2px 0;text-transform:uppercase;letter-spacing:.02em}
-  .inc-card .meta{font-size:12px;color:var(--muted);margin-bottom:8px}
-  .inc-card .row{font-size:13.5px;color:var(--ink-soft);margin:3px 0;line-height:1.4}
-  .inc-card .row b{color:var(--ink);font-weight:600}
-  .inc-card .del{position:absolute;top:8px;right:8px;background:transparent;border:none;color:var(--muted);font-size:19px;cursor:pointer;padding:2px 6px;line-height:1}
-  .inc-card.g-grave{border-left-color:var(--buoy-dark)}.inc-card.g-moderada{border-left-color:#d98a2b}.inc-card.g-leve{border-left-color:var(--teal)}
-  .inc-empty{color:var(--muted);font-size:13.5px;text-align:center;padding:14px}
-  /* ---- horarios ---- */
-  .hor-table{width:100%;border-collapse:collapse;margin-top:4px;font-size:13px}
-  .hor-table th,.hor-table td{border:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
-  .hor-table thead th{background:var(--ink);color:var(--sand-2);font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
-  .hor-table tbody th{background:#f1e8d6;color:var(--ink);white-space:nowrap}
-  .hor-note{font-size:12.5px;color:var(--ink-soft);margin-top:10px;line-height:1.55}
 </style>
 </head>
 <body>
@@ -118,7 +93,6 @@
 </header>
 
 <div class="wrap">
-  <div id="panel-horas" class="tabpanel">
   <section>
     <div class="panel collapsed" id="paramPanel">
       <div class="panel-h" onclick="togglePanel('paramPanel')"><h2>Datos y supuestos</h2><span class="chev">▾</span></div>
@@ -182,47 +156,7 @@
   <p class="save-state" id="saveState"></p>
   <p class="note" id="footnote"></p>
   <div style="text-align:center;margin-top:10px"><button class="resetbtn" onclick="resetAll()">Vaciar y empezar de cero</button></div>
-  </div><!-- /panel-horas -->
-
-  <div id="panel-incidencias" class="tabpanel" hidden>
-    <section>
-      <div class="panel">
-        <div class="panel-h"><h2>Registrar incidencia</h2></div>
-        <div class="panel-b">
-          <div class="grid2">
-            <div><label>Fecha y hora</label><input id="i_fecha" type="datetime-local"></div>
-            <div><label>Zona</label><select id="i_zona"><option>P1 · El Mexicano</option><option>P2 · El Delfino</option><option>Toboganes</option><option>Vestuarios</option><option>Recinto / otra</option></select></div>
-          </div>
-          <div class="grid2">
-            <div><label>Tipo</label><select id="i_tipo"><option>Rescate en agua</option><option>Primeros auxilios</option><option>Incumplimiento de normas</option><option>Desperfecto / material</option><option>Persona perdida</option><option>Otra</option></select></div>
-            <div><label>Gravedad</label><select id="i_grav"><option>Leve</option><option>Moderada</option><option>Grave</option></select></div>
-          </div>
-          <div class="grid2">
-            <div><label>Persona afectada</label><input id="i_persona" type="text" placeholder="Nombre / —"></div>
-            <div><label>Edad aprox.</label><input id="i_edad" type="text" inputmode="numeric" placeholder=""></div>
-          </div>
-          <label>Descripción de lo ocurrido</label><textarea id="i_desc" placeholder="Qué ha pasado…"></textarea>
-          <label>Actuación realizada</label><textarea id="i_actua" placeholder="Qué se ha hecho…"></textarea>
-          <div class="grid2">
-            <div><label>Socorrista</label><input id="i_socorrista" type="text" placeholder="Quién atiende"></div>
-            <div><label>Derivación</label><select id="i_deriv"><option>Ninguna</option><option>Botiquín / reposo</option><option>112 / ambulancia</option><option>Centro médico</option><option>Familia / tutor</option></select></div>
-          </div>
-          <button class="btn-add" onclick="addIncidencia()">Guardar incidencia</button>
-          <p class="hint">Cada incidencia se guarda como una ficha aparte, en la nube.</p>
-        </div>
-      </div>
-    </section>
-    <section>
-      <p class="seclabel">Incidencias registradas</p>
-      <div id="incBox"></div>
-    </section>
-  </div><!-- /panel-incidencias -->
 </div>
-
-<nav class="tabbar">
-  <button id="tab-horas" class="active" onclick="switchTab('horas')"><span class="ic">🗓️</span>Horarios</button>
-  <button id="tab-incidencias" onclick="switchTab('incidencias')"><span class="ic">⚠️</span>Incidencias</button>
-</nav>
 
 <script>
 window.addEventListener('unhandledrejection',function(e){e.preventDefault();});
@@ -369,68 +303,7 @@ async function resetAll(){
   }catch(e){alert('No se ha podido vaciar la nube. Revisa la conexión e inténtalo otra vez.');return;}
   entries=[];saveEntries();render();
 }
-/* ---- pestañas inferiores ---- */
-function switchTab(name){
-  ['horas','incidencias'].forEach(function(t){
-    document.getElementById('panel-'+t).hidden=(t!==name);
-    document.getElementById('tab-'+t).classList.toggle('active',t===name);
-  });
-  window.scrollTo(0,0);
-}
-
-/* ---- incidencias (se guardan en la nube, con copia local) ---- */
-let incidencias=[];
-async function loadInc(){
-  const r=lsGet('cuad_incidencias');
-  if(r){try{incidencias=JSON.parse(r);}catch(e){incidencias=[];}}
-  renderIncidencias();
-  try{
-    const resp=await sbFetch('incidencias?select=*&order=id.desc');
-    const rows=await resp.json();
-    incidencias=rows.map(function(x){return {id:x.id,fecha:x.fecha,zona:x.zona,tipo:x.tipo,grav:x.grav,persona:x.persona,edad:x.edad,desc:x.descr,actua:x.actua,socorrista:x.socorrista,deriv:x.deriv};});
-    saveInc();renderIncidencias();
-  }catch(e){/* sin conexión: se queda la copia local */}
-}
-function saveInc(){lsSet('cuad_incidencias',JSON.stringify(incidencias));}
-function escHtml(s){return (s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-function fmtFecha(s){if(!s)return '—';const d=new Date(s);if(isNaN(d.getTime()))return s;return d.toLocaleString('es-ES',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}
-async function addIncidencia(){
-  const g=function(id){return document.getElementById(id).value.trim();};
-  const inc={id:Date.now(),fecha:g('i_fecha'),zona:g('i_zona'),tipo:g('i_tipo'),grav:g('i_grav'),persona:g('i_persona'),edad:g('i_edad'),desc:g('i_desc'),actua:g('i_actua'),socorrista:g('i_socorrista'),deriv:g('i_deriv')};
-  if(!inc.desc){alert('Pon al menos una descripción de la incidencia.');return;}
-  try{
-    await sbFetch('incidencias',{method:'POST',prefer:'return=minimal',body:JSON.stringify([{id:inc.id,fecha:inc.fecha,zona:inc.zona,tipo:inc.tipo,grav:inc.grav,persona:inc.persona,edad:inc.edad,descr:inc.desc,actua:inc.actua,socorrista:inc.socorrista,deriv:inc.deriv}])});
-  }catch(e){alert('No se ha podido guardar la incidencia en la nube. Revisa la conexión e inténtalo otra vez.');return;}
-  incidencias.unshift(inc);saveInc();renderIncidencias();
-  ['i_persona','i_edad','i_desc','i_actua','i_socorrista'].forEach(function(id){document.getElementById(id).value='';});
-  alert('Incidencia guardada.');
-}
-async function delIncidencia(id){
-  if(!confirm('¿Borrar esta incidencia?'))return;
-  try{
-    await sbFetch('incidencias?id=eq.'+id,{method:'DELETE'});
-  }catch(e){alert('No se ha podido borrar la incidencia en la nube. Revisa la conexión e inténtalo otra vez.');return;}
-  incidencias=incidencias.filter(function(x){return x.id!==id;});saveInc();renderIncidencias();
-}
-function renderIncidencias(){
-  const box=document.getElementById('incBox');if(!box)return;
-  if(!incidencias.length){box.innerHTML='<div class="panel"><div class="inc-empty">Sin incidencias registradas.</div></div>';return;}
-  box.innerHTML=incidencias.map(function(i){
-    const gc=(i.grav||'').toLowerCase();
-    return '<div class="inc-card g-'+gc+'"><button class="del" onclick="delIncidencia('+i.id+')">×</button>'+
-      '<h3>'+escHtml(i.tipo||'Incidencia')+'</h3>'+
-      '<div class="meta">'+fmtFecha(i.fecha)+' · '+escHtml(i.zona||'')+(i.grav?' · '+escHtml(i.grav):'')+'</div>'+
-      ((i.persona||i.edad)?'<div class="row"><b>Persona:</b> '+escHtml(i.persona||'—')+(i.edad?' ('+escHtml(i.edad)+' años)':'')+'</div>':'')+
-      '<div class="row"><b>Qué pasó:</b> '+escHtml(i.desc)+'</div>'+
-      (i.actua?'<div class="row"><b>Actuación:</b> '+escHtml(i.actua)+'</div>':'')+
-      (i.socorrista?'<div class="row"><b>Socorrista:</b> '+escHtml(i.socorrista)+'</div>':'')+
-      ((i.deriv&&i.deriv!=='Ninguna')?'<div class="row"><b>Derivación:</b> '+escHtml(i.deriv)+'</div>':'')+
-    '</div>';
-  }).join('');
-}
-
 load();
-loadInc();
 if('serviceWorker' in navigator){
   let refreshing=false;
   navigator.serviceWorker.addEventListener('controllerchange',function(){if(refreshing)return;refreshing=true;location.reload();});
