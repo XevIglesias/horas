@@ -105,10 +105,6 @@
           <div><label>Plus nocturnidad / hora (€)</label><input id="p_noct" type="number" step="0.01"></div>
           <div><label>Retención IRPF (%)</label><input id="p_irpf" type="number" step="0.5"></div>
         </div>
-        <div class="grid2">
-          <div><label>Recargo festivo (%)</label><input id="p_festPct" type="number" step="1"></div>
-          <div></div>
-        </div>
         <div class="grid3">
           <div><label>Jornada semanal (h)</label><input id="p_week" type="number" step="1"></div>
           <div><label>Vacaciones / año</label><input id="p_vac" type="number" step="1"></div>
@@ -153,6 +149,21 @@
     <div class="v num" id="totalNet">—</div>
   </div>
 
+  <section style="margin-top:16px">
+    <div class="panel collapsed" id="pdfPanel">
+      <div class="panel-h" onclick="togglePanel('pdfPanel')"><h2>Nóminas reales (PDF)</h2><span class="chev">▾</span></div>
+      <div class="panel-b">
+        <p class="hint">Las nóminas de verdad, tal cual llegan, para compararlas con lo que calcula la app.</p>
+        <div id="pdfList">
+          <div class="ln"><span>Junio 2026</span><span class="v">pendiente de subir</span></div>
+          <div class="ln"><span>Julio 2026</span><span class="v">aún no cobrada</span></div>
+          <div class="ln"><span>Agosto 2026</span><span class="v">aún no cobrada</span></div>
+          <div class="ln"><span>Septiembre 2026 (finiquito)</span><span class="v">aún no cobrada</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <p class="save-state" id="saveState"></p>
   <p class="note" id="footnote"></p>
   <div style="text-align:center;margin-top:10px"><button class="resetbtn" onclick="resetAll()">Vaciar y empezar de cero</button></div>
@@ -164,6 +175,8 @@ const MONTHS=['enero','febrero','marzo','abril','mayo','junio','julio','agosto',
 const WD=['dom','lun','mar','mié','jue','vie','sáb'];
 const SS_BASE=0.0655, SS_OT=0.0470;
 const DEFAULTS={base:1986,ot:13.37,noct:3.20,festPct:40,irpf:3,week:40,vac:31,start:'2026-06-13',end:'2026-09-15'};
+const PARAMS_V=2; /* al cambiar los DEFAULTS, subir este número para descartar ajustes guardados antiguos */
+const IRPF_MES={'Junio':16}; /* retención real que aplicó la empresa ese mes (junio: 16% según Xavier, pendiente de confirmar con la nómina); el resto usa el % general */
 const ANUAL_H=1783; // jornada anual hostelería 2026; hora ordinaria = base*12/ANUAL_H
 const FESTIVOS=new Set([]); // El Delfín Verde NO paga recargo de festivo (ni +40% ni doble): las horas de festivo se cobran solo como horas extra normales. Vaciado a petición de Xavier (jul 2026) hasta que la empresa cumpla la ley.
 /* === DATOS EN LA NUBE (jul 2026): las horas viven en Supabase (tabla `entries`). Solo hay horas REALES del fichaje de Factorial: un robot en el PC de Xavier las sincroniza cada día (seguimiento horas/factorial-sync/sync.py), redondeadas a la media hora como cuenta la empresa. Sin estimaciones de futuro (decisión de Xavier, jul 2026). === */
@@ -185,6 +198,9 @@ function lsSet(k,v){try{localStorage.setItem(k,v);return true;}catch(e){return f
 
 async function load(){
   P={...DEFAULTS};
+  /* recupera los ajustes guardados en este dispositivo (solo si son de esta versión de la app) */
+  const sp=lsGet('cuad_params');
+  if(sp){try{const o=JSON.parse(sp);if(o&&o._v===PARAMS_V){delete o._v;Object.assign(P,o);}}catch(e){}}
   fillParams();
   /* 1) pinta al instante con la última copia local */
   const c=lsGet('cuad_entries');
@@ -201,18 +217,18 @@ async function load(){
     updateSaveState('⚠️ Sin conexión con la nube: mostrando la última copia de este dispositivo.');
   }
 }
-function saveParams(){lsSet('cuad_params',JSON.stringify(P));}
+function saveParams(){lsSet('cuad_params',JSON.stringify(Object.assign({_v:PARAMS_V},P)));}
 function saveEntries(){lsSet('cuad_entries',JSON.stringify(entries));}
 function updateSaveState(msg){
   document.getElementById('saveState').textContent=msg!==undefined&&msg!==''?msg:'☁️ Guardado en la nube: verás lo mismo en cualquier dispositivo. Son las horas reales del fichaje de Factorial: se actualizan solas cada día.';
 }
 
 function fillParams(){
-  p_base.value=P.base;p_ot.value=P.ot;p_noct.value=P.noct;p_festPct.value=P.festPct;p_irpf.value=P.irpf;
+  p_base.value=P.base;p_ot.value=P.ot;p_noct.value=P.noct;p_irpf.value=P.irpf;
   p_week.value=P.week;p_vac.value=P.vac;p_start.value=P.start;p_end.value=P.end;
   if(!e_date.value)e_date.value=P.start;
 }
-[['p_base','base'],['p_ot','ot'],['p_noct','noct'],['p_festPct','festPct'],['p_irpf','irpf'],['p_week','week'],['p_vac','vac'],['p_start','start'],['p_end','end']].forEach(([id,k])=>{
+[['p_base','base'],['p_ot','ot'],['p_noct','noct'],['p_irpf','irpf'],['p_week','week'],['p_vac','vac'],['p_start','start'],['p_end','end']].forEach(([id,k])=>{
   document.getElementById(id).addEventListener('change',e=>{P[k]=(k==='start'||k==='end')?e.target.value:parseFloat(e.target.value)||0;saveParams();render();});
 });
 function togglePanel(id){document.getElementById(id).classList.toggle('collapsed');}
@@ -273,10 +289,11 @@ function renderWeeks(weeks,dayOT){
 }
 function buildNomina(label,tag,parts,isFin){
   let gross=0,ss=0;parts.forEach(p=>{gross+=p.gross;ss+=p.gross*(p.kind==='ot'?SS_OT:SS_BASE);});
-  const irpf=gross*(P.irpf/100),net=gross-ss-irpf;let lines='';
+  const irpfPct=IRPF_MES[label]!==undefined?IRPF_MES[label]:P.irpf;
+  const irpf=gross*(irpfPct/100),net=gross-ss-irpf;let lines='';
   parts.forEach(p=>{if(p.gross>0.001)lines+='<div class="ln"><span>'+p.name+'</span><span class="v num">'+eur(p.gross)+'</span></div>';});
   lines+='<div class="ln neg"><span>Seguridad Social</span><span class="v num">− '+eur(ss)+'</span></div>';
-  lines+='<div class="ln neg"><span>IRPF ('+P.irpf+'%)</span><span class="v num">− '+eur(irpf)+'</span></div>';
+  lines+='<div class="ln neg"><span>IRPF ('+irpfPct+'%'+(IRPF_MES[label]!==undefined?' · real de la nómina':'')+')</span><span class="v num">− '+eur(irpf)+'</span></div>';
   return {net,html:'<div class="nomina'+(isFin?' fin':'')+'"><div class="nomina-h"><div class="mn">'+label+'</div><div class="tag">'+tag+'</div></div><div class="lines">'+lines+'</div><div class="net"><span class="lbl">Neto en mano</span><span class="val num">'+eur(net)+'</span></div></div>'};
 }
 function renderNominas(dayOT){
