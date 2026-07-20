@@ -118,7 +118,7 @@
           <div><label>Inicio contrato</label><input id="p_start" type="date"></div>
           <div><label>Fin contrato</label><input id="p_end" type="date"></div>
         </div>
-        <p class="hint">Extra = horas por encima de 40 h/semana (lunes–domingo). IRPF 0&nbsp;% es el caso probable; súbelo para el caso malo. Seguridad Social automática: ~6,55&nbsp;% sobre base y vacaciones, ~4,70&nbsp;% sobre extras y nocturnidad.</p>
+        <p class="hint">Extra = horas por encima de 40 h/semana (lunes–domingo). IRPF ~3&nbsp;% (lo que aplica Factorial tras el modelo 145); ajústalo si cambia en la nómina. Seguridad Social automática: ~6,55&nbsp;% sobre base y vacaciones, ~4,70&nbsp;% sobre extras y nocturnidad.</p>
       </div>
     </div>
   </section>
@@ -163,10 +163,10 @@ window.addEventListener('unhandledrejection',function(e){e.preventDefault();});
 const MONTHS=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const WD=['dom','lun','mar','mié','jue','vie','sáb'];
 const SS_BASE=0.0655, SS_OT=0.0470;
-const DEFAULTS={base:1986,ot:13.37,noct:3.20,festPct:40,irpf:2,week:40,vac:31,start:'2026-06-13',end:'2026-09-15'};
+const DEFAULTS={base:1986,ot:13.37,noct:3.20,festPct:40,irpf:3,week:40,vac:31,start:'2026-06-13',end:'2026-09-15'};
 const ANUAL_H=1783; // jornada anual hostelería 2026; hora ordinaria = base*12/ANUAL_H
 const FESTIVOS=new Set([]); // El Delfín Verde NO paga recargo de festivo (ni +40% ni doble): las horas de festivo se cobran solo como horas extra normales. Vaciado a petición de Xavier (jul 2026) hasta que la empresa cumpla la ley.
-/* === DATOS EN LA NUBE (jul 2026): las horas viven en Supabase (tabla `entries`). Junio 13–30 y julio 1–11 son las horas EXACTAS del fichaje de la empresa; del 12 jul al 15 sep hay una ESTIMACIÓN (10 h/día librando lunes; septiembre 9 h) que se va sustituyendo por horas reales al anotarlas. === */
+/* === DATOS EN LA NUBE (jul 2026): las horas viven en Supabase (tabla `entries`). Solo hay horas REALES del fichaje de Factorial: un robot en el PC de Xavier las sincroniza cada día (seguimiento horas/factorial-sync/sync.py), redondeadas a la media hora como cuenta la empresa. Sin estimaciones de futuro (decisión de Xavier, jul 2026). === */
 let P={...DEFAULTS}, entries=[], canSave=false;
 
 /* ---- Base de datos en la nube (Supabase, plan gratuito) ---- */
@@ -204,7 +204,7 @@ async function load(){
 function saveParams(){lsSet('cuad_params',JSON.stringify(P));}
 function saveEntries(){lsSet('cuad_entries',JSON.stringify(entries));}
 function updateSaveState(msg){
-  document.getElementById('saveState').textContent=msg!==undefined&&msg!==''?msg:'☁️ Guardado en la nube: verás lo mismo en cualquier dispositivo. Junio y julio (hasta el 11) son horas reales de fichaje; el resto, estimación.';
+  document.getElementById('saveState').textContent=msg!==undefined&&msg!==''?msg:'☁️ Guardado en la nube: verás lo mismo en cualquier dispositivo. Son las horas reales del fichaje de Factorial: se actualizan solas cada día.';
 }
 
 function fillParams(){
